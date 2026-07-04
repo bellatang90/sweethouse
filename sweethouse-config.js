@@ -30,5 +30,5 @@ export const FIREBASE_CONFIG = {
   storageBucket: "sweethouse-a4d83.firebasestorage.app",
   messagingSenderId: "565129514757",
   appId: "1:565129514757:web:6e3eaf931ddafd7285316c",
-  measurementId: "G-B093QR03D1"
+  //measurementId: "G-B093QR03D1"
 };
