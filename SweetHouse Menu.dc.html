@@ -33,18 +33,18 @@ image-slot#hero{height:340px !important;min-height:340px !important}
 </style>
 </helmet>
 
-<div style="font-family: 'Instrument Sans', sans-serif; color: #33291F;" data-screen-label="Storefront">
+<div style="font-family: 'Instrument Sans', sans-serif; color: #33291F;" data-screen-label="Order online">
 
   <!-- ===== Top bar ===== -->
   <div data-screen-label="Top bar" style="position: sticky; top: 0; z-index: 40; background: rgba(251,248,243,0.92); backdrop-filter: blur(10px); border-bottom: 1px solid #E4DCD0;">
     <div id="sh-topbar" style="max-width: 1240px; margin: 0 auto; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; row-gap: 10px;">
-      <a href="#top" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: #33291F;">
+      <a href="SweetHouse.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: #33291F;">
         <span style="width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid #33291F; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; background: oklch(0.96 0.025 85); font-family: 'Young Serif', serif; font-size: 10.5px; line-height: 1.05; text-align: center;">Sweet<br>House</span>
         <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.26em;">SWEETHOUSE</span>
       </a>
       <div id="sh-nav" style="display: flex; align-items: center; gap: 26px; flex-wrap: wrap;">
         <a href="#menu" style="font-size: 12.5px; font-weight: 600; letter-spacing: 0.14em; color: #33291F; text-decoration: none;" style-hover="color: oklch(0.52 0.11 50)">MENU</a>
-        <a id="sh-nav-loc" href="#locations" style="font-size: 12.5px; font-weight: 600; letter-spacing: 0.14em; color: #33291F; text-decoration: none;" style-hover="color: oklch(0.52 0.11 50)">PICK UP LOCATIONS</a>
+        <a id="sh-nav-loc" href="SweetHouse Locations.dc.html" style="font-size: 12.5px; font-weight: 600; letter-spacing: 0.14em; color: #33291F; text-decoration: none;" style-hover="color: oklch(0.52 0.11 50)">PICK UP LOCATIONS</a>
         <a href="#menu" style="background: #33291F; color: #FBF6EC; font-size: 12.5px; font-weight: 600; letter-spacing: 0.14em; padding: 11px 24px; border-radius: 999px; text-decoration: none;" style-hover="background: oklch(0.52 0.11 50)">ORDER ONLINE</a>
         <button onClick="{{ openCart }}" style="display: flex; align-items: center; gap: 7px; background: none; border: none; cursor: pointer; padding: 6px;" aria-label="shopping cart">
           <svg width="19" height="21" viewBox="0 0 18 20"><rect x="1" y="5" width="16" height="14" rx="2" fill="none" stroke="#33291F" stroke-width="1.5"></rect><path d="M5.5 8 V4.5 a3.5 3.5 0 0 1 7 0 V8" fill="none" stroke="#33291F" stroke-width="1.5"></path></svg>
@@ -61,40 +61,8 @@ image-slot#hero{height:340px !important;min-height:340px !important}
     <div style="background: #F3E9D8; color: #6B5638; text-align: center; font-size: 13.5px; padding: 9px 20px;">online ordering is paused right now — check back soon!</div>
   </sc-if>
 
-  <!-- ===== Hero ===== -->
-  <div id="top" data-screen-label="Hero" style="max-width: 1240px; margin: 26px auto 0; padding: 0 24px;">
-    <div id="sh-hero-grid" style="display: grid; grid-template-columns: 5fr 7fr; min-height: 560px; border-radius: 18px; overflow: hidden; border: 1px solid #E4DCD0;">
-      <div id="sh-hero-left" style="background: oklch(0.93 0.035 85); padding: 52px 46px 40px; display: flex; flex-direction: column; justify-content: space-between; gap: 36px;">
-        <div>
-          <div style="font-family: 'Young Serif', serif; font-size: clamp(36px, 4.6vw, 63px); line-height: 1.08;">fresh from<br>our home<br>oven<span style="font-style: italic; color: oklch(0.52 0.11 50);"> daily</span></div>
-          <div style="font-size: 16px; color: #5A4E42; margin-top: 20px; line-height: 1.65;">soft asian-style breads, milk toasts &amp; swiss rolls,<br>baked to order. pay when you pick up.</div>
-          <div style="display: flex; align-items: center; gap: 14px; margin-top: 30px;">
-            <a href="#menu" style="background: #33291F; color: #FBF6EC; font-size: 15px; font-weight: 600; padding: 13px 30px; border-radius: 999px; text-decoration: none;" style-hover="background: oklch(0.52 0.11 50)">order for pick up</a>
-            <a href="#locations" style="font-size: 13.5px; color: #5A4E42; text-decoration: underline; text-underline-offset: 3px;">3 pick up locations</a>
-          </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 16px;">
-          <span style="width: 92px; height: 92px; border-radius: 50%; border: 1.5px solid #33291F; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: #FBF6EC; text-align: center;">
-            <span style="font-size: 6.5px; letter-spacing: 0.26em;">HOME BAKERY</span>
-            <span style="font-family: 'Young Serif', serif; font-size: 16px; line-height: 1.05;">Sweet<br>House</span>
-            <span style="font-size: 6.5px; letter-spacing: 0.26em; color: oklch(0.6 0.11 75);">FRESH DAILY</span>
-          </span>
-          <span style="font-size: 12px; color: #7A6C5C; line-height: 1.6;">small-batch home bakery<br>bread · cake · pastry</span>
-        </div>
-      </div>
-      <image-slot id="hero" src="hero.png" shape="rect" placeholder="Drop your bakery hero photo here" style="width: 100%; height: 100%; min-height: 560px; display: block;"></image-slot>
-    </div>
-
-    <div style="display: flex; gap: 10px; row-gap: 10px; align-items: center; padding: 20px 4px 0; flex-wrap: wrap;">
-      <a href="#cat-bread" style="background: oklch(0.9 0.05 85); color: #33291F; font-size: 13.5px; padding: 8px 18px; border-radius: 999px; text-decoration: none;">bread</a>
-      <a href="#cat-cake" style="background: oklch(0.93 0.035 85); color: #33291F; font-size: 13.5px; padding: 8px 18px; border-radius: 999px; text-decoration: none;">cake</a>
-      <a href="#cat-pastry" style="background: #F0E9DF; color: #33291F; font-size: 13.5px; padding: 8px 18px; border-radius: 999px; text-decoration: none;">pastry</a>
-      <span style="margin-left: auto; font-size: 13px; color: #8A7C6C;">no payment online — you pay at pick up</span>
-    </div>
-  </div>
-
   <!-- ===== Menu ===== -->
-  <div id="menu" data-screen-label="Menu" style="max-width: 1240px; margin: 70px auto 0; padding: 0 24px; scroll-margin-top: 84px;">
+  <div id="menu" data-screen-label="Menu" style="max-width: 1240px; margin: 36px auto 0; padding: 0 24px; scroll-margin-top: 84px;">
     <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
       <div style="font-family: 'Young Serif', serif; font-size: clamp(34px, 7vw, 50px);">order online</div>
       <div style="font-size: 13.5px; color: #8A7C6C;">tap any item to see its ingredients</div>
@@ -118,7 +86,8 @@ image-slot#hero{height:340px !important;min-height:340px !important}
               <div style="padding: 14px 16px 16px;">
                 <div style="display: flex; justify-content: space-between; gap: 10px; font-size: 15.5px; font-weight: 600;"><span>{{ item.name }}</span><span>{{ item.priceLabel }}</span></div>
                 <div style="font-size: 12.5px; color: #8A7C6C; margin-top: 5px; min-height: 17px;">{{ item.teaser }}</div>
-                <button onClick="{{ item.add }}" style="{{ item.btnStyle }}">{{ item.btnLabel }}</button>
+                <sc-if value="{{ item.showAdd }}" hint-placeholder-val="{{ true }}"><button onClick="{{ item.add }}" style="{{ item.btnStyle }}">{{ item.btnLabel }}</button></sc-if>
+                <sc-if value="{{ item.showStepper }}" hint-placeholder-val="{{ false }}"><div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 12px;"><button onClick="{{ item.dec }}" style="width: 34px; height: 34px; border-radius: 999px; border: 1.5px solid #33291F; background: #FBF6EC; cursor: pointer; font-size: 16px; line-height: 1; color: #33291F;">−</button><span style="font-size: 15px; font-weight: 600; min-width: 22px; text-align: center;">{{ item.qtyLabel }} <span style="font-weight: 400; color: #8A7C6C; font-size: 12px;">in cart</span></span><button onClick="{{ item.inc }}" style="width: 34px; height: 34px; border-radius: 999px; border: 1.5px solid #33291F; background: #33291F; cursor: pointer; font-size: 16px; line-height: 1; color: #FBF6EC;">+</button></div></sc-if>
               </div>
             </div>
           </div>
@@ -145,7 +114,8 @@ image-slot#hero{height:340px !important;min-height:340px !important}
               <div style="padding: 14px 16px 16px;">
                 <div style="display: flex; justify-content: space-between; gap: 10px; font-size: 15.5px; font-weight: 600;"><span>{{ item.name }}</span><span>{{ item.priceLabel }}</span></div>
                 <div style="font-size: 12.5px; color: #8A7C6C; margin-top: 5px; min-height: 17px;">{{ item.teaser }}</div>
-                <button onClick="{{ item.add }}" style="{{ item.btnStyle }}">{{ item.btnLabel }}</button>
+                <sc-if value="{{ item.showAdd }}" hint-placeholder-val="{{ true }}"><button onClick="{{ item.add }}" style="{{ item.btnStyle }}">{{ item.btnLabel }}</button></sc-if>
+                <sc-if value="{{ item.showStepper }}" hint-placeholder-val="{{ false }}"><div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 12px;"><button onClick="{{ item.dec }}" style="width: 34px; height: 34px; border-radius: 999px; border: 1.5px solid #33291F; background: #FBF6EC; cursor: pointer; font-size: 16px; line-height: 1; color: #33291F;">−</button><span style="font-size: 15px; font-weight: 600; min-width: 22px; text-align: center;">{{ item.qtyLabel }} <span style="font-weight: 400; color: #8A7C6C; font-size: 12px;">in cart</span></span><button onClick="{{ item.inc }}" style="width: 34px; height: 34px; border-radius: 999px; border: 1.5px solid #33291F; background: #33291F; cursor: pointer; font-size: 16px; line-height: 1; color: #FBF6EC;">+</button></div></sc-if>
               </div>
             </div>
           </div>
@@ -171,29 +141,13 @@ image-slot#hero{height:340px !important;min-height:340px !important}
               <div style="padding: 14px 16px 16px;">
                 <div style="display: flex; justify-content: space-between; gap: 10px; font-size: 15.5px; font-weight: 600;"><span>{{ item.name }}</span><span>{{ item.priceLabel }}</span></div>
                 <div style="font-size: 12.5px; color: #8A7C6C; margin-top: 5px; min-height: 17px;">{{ item.teaser }}</div>
-                <button onClick="{{ item.add }}" style="{{ item.btnStyle }}">{{ item.btnLabel }}</button>
+                <sc-if value="{{ item.showAdd }}" hint-placeholder-val="{{ true }}"><button onClick="{{ item.add }}" style="{{ item.btnStyle }}">{{ item.btnLabel }}</button></sc-if>
+                <sc-if value="{{ item.showStepper }}" hint-placeholder-val="{{ false }}"><div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 12px;"><button onClick="{{ item.dec }}" style="width: 34px; height: 34px; border-radius: 999px; border: 1.5px solid #33291F; background: #FBF6EC; cursor: pointer; font-size: 16px; line-height: 1; color: #33291F;">−</button><span style="font-size: 15px; font-weight: 600; min-width: 22px; text-align: center;">{{ item.qtyLabel }} <span style="font-weight: 400; color: #8A7C6C; font-size: 12px;">in cart</span></span><button onClick="{{ item.inc }}" style="width: 34px; height: 34px; border-radius: 999px; border: 1.5px solid #33291F; background: #33291F; cursor: pointer; font-size: 16px; line-height: 1; color: #FBF6EC;">+</button></div></sc-if>
               </div>
             </div>
           </div>
         </sc-for>
       </div>
-    </div>
-  </div>
-
-  <!-- ===== Locations ===== -->
-  <div id="locations" data-screen-label="Pick up locations" style="max-width: 1240px; margin: 80px auto 0; padding: 0 24px; scroll-margin-top: 84px;">
-    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
-      <div style="font-family: 'Young Serif', serif; font-size: clamp(34px, 7vw, 50px);">pick up locations</div>
-      <div style="font-size: 13.5px; color: #8A7C6C;">payment is handled at pick up — cash or venmo</div>
-    </div>
-    <div id="sh-locs-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 26px;">
-      <sc-for list="{{ locationCards }}" as="loc" hint-placeholder-count="3">
-        <div style="background: oklch(0.975 0.012 85); border: 1px solid #E4DCD0; border-radius: 14px; padding: 24px 24px 22px;">
-          <div style="font-family: 'Young Serif', serif; font-size: 23px;">{{ loc.name }}</div>
-          <div style="font-size: 13.5px; color: #5A4E42; margin-top: 8px;">{{ loc.address }}</div>
-          <div style="font-size: 12.5px; color: #8A7C6C; margin-top: 12px; letter-spacing: 0.04em;">{{ loc.hours }}</div>
-        </div>
-      </sc-for>
     </div>
   </div>
 
@@ -206,7 +160,7 @@ image-slot#hero{height:340px !important;min-height:340px !important}
       </div>
       <div style="display: flex; gap: 22px; align-items: center; font-size: 13px;">
         <a href="#menu" style="color: #5A4E42;">menu</a>
-        <a href="#locations" style="color: #5A4E42;">pick up</a>
+        <a href="SweetHouse Locations.dc.html" style="color: #5A4E42;">pick up</a>
         <a href="SweetHouse Admin.dc.html" style="color: #B9AC9B;">admin</a>
       </div>
     </div>
@@ -327,13 +281,15 @@ image-slot#hero{height:340px !important;min-height:340px !important}
 </div>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;announcement&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;This week: try the fresh Matcha cake!&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Storefront&quot;},&quot;orderingEnabled&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Storefront&quot;}}">
+<script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   state = {
     products: null,
     locations: null,
     cart: [],
     soldOut: [],
+    paused: false,
+    announce: '',
     cartOpen: false,
     infoId: null,
     placed: null,
@@ -350,12 +306,17 @@ class Component extends DCLogic {
       this.setState({
         cart: JSON.parse(localStorage.getItem('sh_cart') || '[]'),
         soldOut: JSON.parse(localStorage.getItem('sh_soldout') || '[]'),
+        paused: localStorage.getItem('sh_paused') === '1',
+        announce: localStorage.getItem('sh_announce') || '',
       });
     } catch (e) {}
     import('./sweethouse-data.js').then((m) => {
       this.setState({ products: m.PRODUCTS, locations: m.LOCATIONS });
     }).catch((e) => { console.error('data load failed', e); });
     this._onStorage = (e) => {
+      if (e.key === 'sh_paused' || e.key === 'sh_announce') {
+        this.setState({ paused: localStorage.getItem('sh_paused') === '1', announce: localStorage.getItem('sh_announce') || '' });
+      }
       if (e.key === 'sh_soldout') {
         try { this.setState({ soldOut: JSON.parse(e.newValue || '[]') }); } catch (err) {}
       }
@@ -418,7 +379,7 @@ class Component extends DCLogic {
 
   renderVals() {
     const { products, locations, cart, soldOut, cartOpen, infoId, placed, addedId, name, phone, note, locId, error } = this.state;
-    const orderingOn = this.props.orderingEnabled ?? true;
+    const orderingOn = !this.state.paused;
     const soldSet = new Set(soldOut);
 
     const btnBase = {
@@ -428,6 +389,7 @@ class Component extends DCLogic {
     };
     const mk = (p) => {
       const sold = soldSet.has(p.id);
+      const cartRow = cart.find((r) => r.id === p.id);
       const disabled = sold || !orderingOn;
       return {
         ...p,
@@ -437,6 +399,11 @@ class Component extends DCLogic {
         dimStyle: sold ? { opacity: 0.45, filter: 'grayscale(1)' } : {},
         open: () => this.setState({ infoId: p.id }),
         add: (e) => { if (e && e.stopPropagation) e.stopPropagation(); if (!disabled) this.addToCart(p.id); },
+        inc: (e) => { if (e && e.stopPropagation) e.stopPropagation(); if (!disabled) this.changeQty(p.id, 1); },
+        dec: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.changeQty(p.id, -1); },
+        qtyLabel: cartRow ? String(cartRow.qty) : '',
+        showAdd: !cartRow || sold,
+        showStepper: !!cartRow && !sold,
         btnLabel: sold ? 'sold out' : (!orderingOn ? 'ordering paused' : (addedId === p.id ? 'added ✓' : 'add to order')),
         btnStyle: disabled
           ? { ...btnBase, background: '#EAE4DA', color: '#9A8D7D', cursor: 'default' }
@@ -494,8 +461,8 @@ class Component extends DCLogic {
       closeCart: () => this.setState({ cartOpen: false, placed: null, error: '' }),
       stop: (e) => e.stopPropagation(),
 
-      hasAnnouncement: !!(this.props.announcement && String(this.props.announcement).trim()),
-      announcementText: this.props.announcement || '',
+      hasAnnouncement: !!String(this.state.announce || '').trim(),
+      announcementText: this.state.announce || '',
       orderingPaused: !orderingOn,
 
       breadItems: byCat('bread'),

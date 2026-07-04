@@ -8,11 +8,12 @@
 <body>
 <x-dc>
 <helmet data-dc-atomics>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
 <style>
 body{margin:0;background:#FBF6EC}
-::selection{background:oklch(0.93 0.035 85)}
+::selection{background:oklch(0.92 0.045 85)}
 </style>
 </helmet>
 
@@ -23,82 +24,125 @@ body{margin:0;background:#FBF6EC}
       <span style="width: 52px; height: 52px; border-radius: 50%; border: 1.5px solid #33291F; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; background: oklch(0.96 0.025 85); font-family: 'Young Serif', serif; font-size: 11px; line-height: 1.05; text-align: center;">Sweet<br>House</span>
       <div>
         <div style="font-family: 'Young Serif', serif; font-size: 34px; line-height: 1.1;">admin</div>
-        <div style="font-size: 12.5px; color: #8A7C6C;">availability &amp; orders</div>
+        <div style="font-size: 12.5px; color: #8A7C6C;">storefront · availability · orders</div>
       </div>
     </div>
     <a href="SweetHouse.dc.html" style="font-size: 13.5px; color: #5A4E42; text-decoration: none; border: 1px solid #D8CDBE; padding: 9px 18px; border-radius: 999px;" style-hover="border-color: #33291F">← back to storefront</a>
   </div>
 
-  <div style="background: #F3E9D8; border-radius: 10px; font-size: 12.5px; color: #6B5638; padding: 10px 16px; margin-top: 20px; line-height: 1.6;">this page saves to <b>this browser</b>. sold-out toggles apply to the storefront instantly. orders appear here when placed in this same browser — for a public launch you'll want orders forwarded to you (email / text); ask me and I'll add it.</div>
-
-  <!-- ===== Availability ===== -->
-  <div data-screen-label="Availability" style="margin-top: 36px;">
-    <div style="display: flex; align-items: baseline; gap: 14px;">
-      <div style="font-family: 'Young Serif', serif; font-size: 30px;">product availability</div>
-      <div style="flex: 1; border-top: 1px solid #E4DCD0;"></div>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; margin-top: 18px;">
-      <sc-for list="{{ adminProducts }}" as="item" hint-placeholder-count="8">
-        <div style="{{ item.rowStyle }}">
-          <div style="flex: 1; min-width: 0;">
-            <div style="font-size: 14px; font-weight: 500;">{{ item.name }}</div>
-            <div style="font-size: 12px; color: #8A7C6C; margin-top: 2px;">{{ item.catLabel }} · {{ item.priceLabel }}</div>
-          </div>
-          <button onClick="{{ item.toggle }}" style="{{ item.btnStyle }}">{{ item.btnLabel }}</button>
-        </div>
-      </sc-for>
-    </div>
-  </div>
-
-  <!-- ===== Orders ===== -->
-  <div data-screen-label="Orders" style="margin-top: 46px;">
-    <div style="display: flex; align-items: baseline; gap: 14px;">
-      <div style="font-family: 'Young Serif', serif; font-size: 30px;">orders</div>
-      <div style="font-size: 13px; color: #8A7C6C;">{{ orderSummary }}</div>
-      <div style="flex: 1; border-top: 1px solid #E4DCD0;"></div>
-      <sc-if value="{{ hasDone }}" hint-placeholder-val="{{ false }}">
-        <button onClick="{{ clearDone }}" style="background: none; border: 1px solid #D8CDBE; border-radius: 999px; font-family: 'Instrument Sans', sans-serif; font-size: 12.5px; color: #5A4E42; padding: 7px 16px; cursor: pointer;">clear completed</button>
+  <!-- ===== Password gate ===== -->
+  <sc-if value="{{ locked }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Admin login" style="max-width: 360px; margin: 80px auto 40px; text-align: center;">
+      <div style="font-family: 'Young Serif', serif; font-size: 26px;">enter password</div>
+      <div style="font-size: 13px; color: #8A7C6C; margin-top: 8px;">this page is for the baker only</div>
+      <input value="{{ pwVal }}" onInput="{{ setPw }}" onKeyDown="{{ pwKey }}" type="password" placeholder="password" style="width: 100%; box-sizing: border-box; margin-top: 18px; font-family: 'Instrument Sans', sans-serif; font-size: 16px; padding: 13px 14px; border: 1px solid #D8CDBE; border-radius: 10px; background: #fff; color: #33291F; outline: none; text-align: center;">
+      <sc-if value="{{ pwError }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size: 13px; color: #A8503C; margin-top: 10px;">wrong password — try again</div>
       </sc-if>
+      <button onClick="{{ tryPw }}" style="width: 100%; margin-top: 14px; background: #33291F; color: #FBF6EC; border: none; font-family: 'Instrument Sans', sans-serif; font-size: 15px; font-weight: 600; padding: 13px; border-radius: 999px; cursor: pointer;" style-hover="background: oklch(0.52 0.11 50)">unlock</button>
     </div>
+  </sc-if>
 
-    <sc-if value="{{ noOrders }}" hint-placeholder-val="{{ false }}">
-      <div style="text-align: center; color: #8A7C6C; font-size: 14px; padding: 44px 20px; line-height: 1.7;">no orders yet.<br>orders placed on the storefront (in this browser) will show up here.</div>
-    </sc-if>
+  <sc-if value="{{ authed }}" hint-placeholder-val="{{ false }}">
+    <div>
+      <div style="background: #F5E9D2; border-radius: 10px; font-size: 12.5px; color: #6B5638; padding: 10px 16px; margin-top: 20px; line-height: 1.6;">this page saves to <b>this browser</b>. toggles apply to the storefront instantly. orders appear here when placed in this same browser — for a public launch you'll want orders forwarded to you (email / text); ask me and I'll add it.</div>
 
-    <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 18px;">
-      <sc-for list="{{ orderCards }}" as="ord" hint-placeholder-count="0">
-        <div style="{{ ord.cardStyle }}">
-          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-            <span style="font-family: ui-monospace, Menlo, monospace; font-size: 13.5px; font-weight: 600; color: oklch(0.52 0.11 50);">{{ ord.num }}</span>
-            <span style="font-size: 12.5px; color: #8A7C6C;">{{ ord.timeLabel }}</span>
-            <span style="{{ ord.statusStyle }}">{{ ord.statusLabel }}</span>
-            <span style="flex: 1;"></span>
-            <button onClick="{{ ord.toggleDone }}" style="background: #33291F; color: #FBF6EC; border: none; border-radius: 999px; font-family: 'Instrument Sans', sans-serif; font-size: 12.5px; padding: 7px 16px; cursor: pointer;">{{ ord.doneLabel }}</button>
-            <button onClick="{{ ord.del }}" style="background: none; border: 1px solid #D8CDBE; border-radius: 999px; font-family: 'Instrument Sans', sans-serif; font-size: 12.5px; color: #8A7C6C; padding: 7px 14px; cursor: pointer;">delete</button>
+      <!-- ===== Storefront controls ===== -->
+      <div data-screen-label="Storefront controls" style="margin-top: 36px;">
+        <div style="display: flex; align-items: baseline; gap: 14px;">
+          <div style="font-family: 'Young Serif', serif; font-size: 30px;">storefront</div>
+          <div style="flex: 1; border-top: 1px solid #E4DCD0;"></div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 18px;">
+          <div style="background: #fff; border: 1px solid #E4DCD0; border-radius: 12px; padding: 16px 18px;">
+            <div style="font-size: 14px; font-weight: 600;">online ordering</div>
+            <div style="font-size: 12.5px; color: #8A7C6C; margin-top: 3px;">{{ pauseNote }}</div>
+            <button onClick="{{ togglePause }}" style="{{ pauseBtnStyle }}">{{ pauseBtnLabel }}</button>
           </div>
-          <div style="display: flex; gap: 26px; flex-wrap: wrap; margin-top: 12px; font-size: 13.5px;">
-            <span><b>{{ ord.name }}</b> · {{ ord.phone }}</span>
-            <span style="color: #5A4E42;">{{ ord.locName }}</span>
-          </div>
-          <sc-if value="{{ ord.hasNote }}" hint-placeholder-val="{{ false }}">
-            <div style="font-size: 13px; color: #6B5638; background: #F7F1E6; border-radius: 8px; padding: 8px 12px; margin-top: 10px;">“{{ ord.note }}”</div>
-          </sc-if>
-          <div style="display: flex; flex-direction: column; gap: 5px; margin-top: 12px; border-top: 1px dashed #E4DCD0; padding-top: 10px;">
-            <sc-for list="{{ ord.lines }}" as="line" hint-placeholder-count="0">
-              <div style="display: flex; justify-content: space-between; font-size: 13.5px;"><span>{{ line.label }}</span><span style="color: #5A4E42;">{{ line.amount }}</span></div>
-            </sc-for>
-            <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-top: 4px;"><span>total due at pick up</span><span>{{ ord.totalLabel }}</span></div>
+          <div style="background: #fff; border: 1px solid #E4DCD0; border-radius: 12px; padding: 16px 18px;">
+            <div style="font-size: 14px; font-weight: 600;">homepage announcement</div>
+            <div style="font-size: 12.5px; color: #8A7C6C; margin-top: 3px;">shows as a banner on the home and menu pages — leave empty to hide</div>
+            <input value="{{ annVal }}" onInput="{{ setAnn }}" placeholder="e.g. taking orders for this weekend until friday 6pm!" style="width: 100%; box-sizing: border-box; margin-top: 12px; font-family: 'Instrument Sans', sans-serif; font-size: 14px; padding: 11px 13px; border: 1px solid #D8CDBE; border-radius: 10px; background: #FBF6EC; color: #33291F; outline: none;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: 10px;">
+              <button onClick="{{ saveAnn }}" style="background: #33291F; color: #FBF6EC; border: none; border-radius: 999px; font-family: 'Instrument Sans', sans-serif; font-size: 12.5px; font-weight: 600; padding: 8px 18px; cursor: pointer;">save banner</button>
+              <sc-if value="{{ annSaved }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size: 12.5px; color: oklch(0.55 0.11 75); font-weight: 600;">saved ✓</span>
+              </sc-if>
+            </div>
           </div>
         </div>
-      </sc-for>
+      </div>
+
+      <!-- ===== Availability ===== -->
+      <div data-screen-label="Availability" style="margin-top: 42px;">
+        <div style="display: flex; align-items: baseline; gap: 14px;">
+          <div style="font-family: 'Young Serif', serif; font-size: 30px;">product availability</div>
+          <div style="flex: 1; border-top: 1px solid #E4DCD0;"></div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; margin-top: 18px;">
+          <sc-for list="{{ adminProducts }}" as="item" hint-placeholder-count="8">
+            <div style="{{ item.rowStyle }}">
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 14px; font-weight: 500;">{{ item.name }}</div>
+                <div style="font-size: 12px; color: #8A7C6C; margin-top: 2px;">{{ item.catLabel }} · {{ item.priceLabel }}</div>
+              </div>
+              <button onClick="{{ item.toggle }}" style="{{ item.btnStyle }}">{{ item.btnLabel }}</button>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- ===== Orders ===== -->
+      <div data-screen-label="Orders" style="margin-top: 46px;">
+        <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+          <div style="font-family: 'Young Serif', serif; font-size: 30px;">orders</div>
+          <div style="font-size: 13px; color: #8A7C6C;">{{ orderSummary }}</div>
+          <div style="flex: 1; border-top: 1px solid #E4DCD0;"></div>
+          <sc-if value="{{ hasDone }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ clearDone }}" style="background: none; border: 1px solid #D8CDBE; border-radius: 999px; font-family: 'Instrument Sans', sans-serif; font-size: 12.5px; color: #5A4E42; padding: 7px 16px; cursor: pointer;">clear completed</button>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ noOrders }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align: center; color: #8A7C6C; font-size: 14px; padding: 44px 20px; line-height: 1.7;">no orders yet.<br>orders placed on the storefront (in this browser) will show up here.</div>
+        </sc-if>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 18px;">
+          <sc-for list="{{ orderCards }}" as="ord" hint-placeholder-count="0">
+            <div style="{{ ord.cardStyle }}">
+              <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <span style="font-family: ui-monospace, Menlo, monospace; font-size: 13.5px; font-weight: 600; color: oklch(0.52 0.11 50);">{{ ord.num }}</span>
+                <span style="font-size: 12.5px; color: #8A7C6C;">{{ ord.timeLabel }}</span>
+                <span style="{{ ord.statusStyle }}">{{ ord.statusLabel }}</span>
+                <span style="flex: 1;"></span>
+                <button onClick="{{ ord.toggleDone }}" style="background: #33291F; color: #FBF6EC; border: none; border-radius: 999px; font-family: 'Instrument Sans', sans-serif; font-size: 12.5px; padding: 7px 16px; cursor: pointer;">{{ ord.doneLabel }}</button>
+                <button onClick="{{ ord.del }}" style="background: none; border: 1px solid #D8CDBE; border-radius: 999px; font-family: 'Instrument Sans', sans-serif; font-size: 12.5px; color: #8A7C6C; padding: 7px 14px; cursor: pointer;">delete</button>
+              </div>
+              <div style="display: flex; gap: 26px; flex-wrap: wrap; margin-top: 12px; font-size: 13.5px;">
+                <span><b>{{ ord.name }}</b> · {{ ord.phone }}</span>
+                <span style="color: #5A4E42;">{{ ord.locName }}</span>
+              </div>
+              <sc-if value="{{ ord.hasNote }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size: 13px; color: #6B5638; background: #F7F1E6; border-radius: 8px; padding: 8px 12px; margin-top: 10px;">“{{ ord.note }}”</div>
+              </sc-if>
+              <div style="display: flex; flex-direction: column; gap: 5px; margin-top: 12px; border-top: 1px dashed #E4DCD0; padding-top: 10px;">
+                <sc-for list="{{ ord.lines }}" as="line" hint-placeholder-count="0">
+                  <div style="display: flex; justify-content: space-between; font-size: 13.5px;"><span>{{ line.label }}</span><span style="color: #5A4E42;">{{ line.amount }}</span></div>
+                </sc-for>
+                <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-top: 4px;"><span>total due at pick up</span><span>{{ ord.totalLabel }}</span></div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
     </div>
-  </div>
+  </sc-if>
 </div>
 
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { products: null, orders: [], soldOut: [] };
+  state = { products: null, orders: [], soldOut: [], authed: false, pw: '', pwError: false, paused: false, annDraft: '', annSaved: false };
 
   componentDidMount() {
     this.loadLS();
@@ -106,20 +150,33 @@ class Component extends DCLogic {
       this.setState({ products: m.PRODUCTS });
     }).catch((e) => { console.error('data load failed', e); });
     this._onStorage = (e) => {
-      if (e.key === 'sh_orders' || e.key === 'sh_soldout') this.loadLS();
+      if (['sh_orders', 'sh_soldout', 'sh_paused', 'sh_announce'].includes(e.key)) this.loadLS();
     };
     window.addEventListener('storage', this._onStorage);
   }
 
-  componentWillUnmount() { window.removeEventListener('storage', this._onStorage); }
+  componentWillUnmount() {
+    window.removeEventListener('storage', this._onStorage);
+    if (this._annTimer) clearTimeout(this._annTimer);
+  }
 
   loadLS() {
     try {
       this.setState({
         orders: JSON.parse(localStorage.getItem('sh_orders') || '[]'),
         soldOut: JSON.parse(localStorage.getItem('sh_soldout') || '[]'),
+        paused: localStorage.getItem('sh_paused') === '1',
+        annDraft: localStorage.getItem('sh_announce') || '',
       });
     } catch (e) {}
+  }
+
+  tryPw() {
+    if (this.state.pw === 'cloud') {
+      this.setState({ authed: true, pwError: false, pw: '' });
+    } else {
+      this.setState({ pwError: true });
+    }
   }
 
   saveSoldOut(list) {
@@ -133,7 +190,7 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const { products, orders, soldOut } = this.state;
+    const { products, orders, soldOut, authed, pw, pwError, paused, annDraft, annSaved } = this.state;
     const soldSet = new Set(soldOut);
 
     const adminProducts = products ? products.map((p) => {
@@ -184,7 +241,38 @@ class Component extends DCLogic {
     });
 
     const newCount = orders.filter((o) => o.status !== 'done').length;
+    const pauseBtnBase = { border: 'none', borderRadius: '999px', fontFamily: "'Instrument Sans', sans-serif", fontSize: '12.5px', fontWeight: 600, padding: '9px 18px', cursor: 'pointer', marginTop: '12px' };
+
     return {
+      locked: !authed,
+      authed,
+      pwVal: pw,
+      setPw: (e) => this.setState({ pw: e.target.value, pwError: false }),
+      pwKey: (e) => { if (e.key === 'Enter') this.tryPw(); },
+      tryPw: () => this.tryPw(),
+      pwError,
+
+      pauseNote: paused ? 'customers currently CANNOT place orders' : 'customers can place orders right now',
+      pauseBtnLabel: paused ? 'paused — tap to resume' : 'open — tap to pause',
+      pauseBtnStyle: paused
+        ? { ...pauseBtnBase, background: '#A8503C', color: '#FBF6EC' }
+        : { ...pauseBtnBase, background: 'oklch(0.9 0.05 85)', color: '#5C4525' },
+      togglePause: () => {
+        const next = !paused;
+        this.setState({ paused: next });
+        try { localStorage.setItem('sh_paused', next ? '1' : '0'); } catch (e) {}
+      },
+
+      annVal: annDraft,
+      setAnn: (e) => this.setState({ annDraft: e.target.value, annSaved: false }),
+      saveAnn: () => {
+        try { localStorage.setItem('sh_announce', this.state.annDraft.trim()); } catch (e) {}
+        this.setState({ annSaved: true });
+        if (this._annTimer) clearTimeout(this._annTimer);
+        this._annTimer = setTimeout(() => this.setState({ annSaved: false }), 1600);
+      },
+      annSaved,
+
       adminProducts,
       orderCards,
       noOrders: orders.length === 0,
