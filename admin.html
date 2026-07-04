@@ -45,7 +45,7 @@ body{margin:0;background:#FBF6EC}
 
   <sc-if value="{{ authed }}" hint-placeholder-val="{{ false }}">
     <div>
-      <div style="background: #F5E9D2; border-radius: 10px; font-size: 12.5px; color: #6B5638; padding: 10px 16px; margin-top: 20px; line-height: 1.6;">this page is for the bake master!</div>
+      <div style="{{ modeStyle }}">{{ modeNote }}</div>
 
       <!-- ===== Storefront controls ===== -->
       <div data-screen-label="Storefront controls" style="margin-top: 36px;">
@@ -99,12 +99,15 @@ body{margin:0;background:#FBF6EC}
           <div style="font-size: 13px; color: #8A7C6C;">{{ orderSummary }}</div>
           <div style="flex: 1; border-top: 1px solid #E4DCD0;"></div>
           <sc-if value="{{ hasDone }}" hint-placeholder-val="{{ false }}">
-            <button onClick="{{ clearDone }}" style="background: none; border: 1px solid #D8CDBE; border-radius: 999px; font-family: 'Instrument Sans', sans-serif; font-size: 12.5px; color: #5A4E42; padding: 7px 16px; cursor: pointer;">clear completed</button>
+            <button onClick="{{ archiveDone }}" style="background: none; border: 1px solid #D8CDBE; border-radius: 999px; font-family: 'Instrument Sans', sans-serif; font-size: 12.5px; color: #5A4E42; padding: 7px 16px; cursor: pointer;">archive completed</button>
+          </sc-if>
+          <sc-if value="{{ hasOrders }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ archiveAll }}" style="background: oklch(0.9 0.05 85); border: none; border-radius: 999px; font-family: 'Instrument Sans', sans-serif; font-size: 12.5px; font-weight: 600; color: #5C4525; padding: 8px 16px; cursor: pointer;">clear all → archive</button>
           </sc-if>
         </div>
 
         <sc-if value="{{ noOrders }}" hint-placeholder-val="{{ false }}">
-          <div style="text-align: center; color: #8A7C6C; font-size: 14px; padding: 44px 20px; line-height: 1.7;">no orders yet.<br>orders placed on the storefront (in this browser) will show up here.</div>
+          <div style="text-align: center; color: #8A7C6C; font-size: 14px; padding: 44px 20px; line-height: 1.7;">no open orders.</div>
         </sc-if>
 
         <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 18px;">
@@ -135,6 +138,35 @@ body{margin:0;background:#FBF6EC}
           </sc-for>
         </div>
       </div>
+
+      <!-- ===== Archive ===== -->
+      <div data-screen-label="Archive" style="margin-top: 46px;">
+        <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+          <div style="font-family: 'Young Serif', serif; font-size: 30px;">archive</div>
+          <div style="font-size: 13px; color: #8A7C6C;">{{ archiveSummary }}</div>
+          <div style="flex: 1; border-top: 1px solid #E4DCD0;"></div>
+          <button onClick="{{ toggleArchive }}" style="background: none; border: 1px solid #D8CDBE; border-radius: 999px; font-family: 'Instrument Sans', sans-serif; font-size: 12.5px; color: #5A4E42; padding: 7px 16px; cursor: pointer;">{{ archiveToggleLabel }}</button>
+        </div>
+        <sc-if value="{{ archiveVisible }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <sc-if value="{{ noArchive }}" hint-placeholder-val="{{ false }}">
+              <div style="text-align: center; color: #8A7C6C; font-size: 14px; padding: 30px 20px;">nothing archived yet — cleared orders will be stored here.</div>
+            </sc-if>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 16px;">
+              <sc-for list="{{ archiveCards }}" as="ord" hint-placeholder-count="0">
+                <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; background: #F5F1EA; border: 1px solid #E4DCD0; border-radius: 10px; padding: 10px 16px; font-size: 13px;">
+                  <span style="font-family: ui-monospace, Menlo, monospace; font-weight: 600; color: #8A7C6C;">{{ ord.num }}</span>
+                  <span style="color: #8A7C6C;">{{ ord.timeLabel }}</span>
+                  <span><b>{{ ord.name }}</b> · {{ ord.phone }}</span>
+                  <span style="color: #5A4E42; flex: 1; min-width: 200px;">{{ ord.itemsText }}</span>
+                  <span style="color: #8A7C6C;">{{ ord.locName }}</span>
+                  <span style="font-weight: 600;">{{ ord.totalLabel }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
     </div>
   </sc-if>
 </div>
@@ -142,33 +174,30 @@ body{margin:0;background:#FBF6EC}
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { products: null, orders: [], soldOut: [], authed: false, pw: '', pwError: false, paused: false, annDraft: '', annSaved: false };
+  state = { products: null, orders: [], archive: [], soldOut: [], authed: false, pw: '', pwError: false, paused: false, annDraft: '', annSaved: false, showArchive: false, cloud: false };
 
   componentDidMount() {
-    this.loadLS();
     import('./sweethouse-data.js').then((m) => {
       this.setState({ products: m.PRODUCTS });
     }).catch((e) => { console.error('data load failed', e); });
-    this._onStorage = (e) => {
-      if (['sh_orders', 'sh_soldout', 'sh_paused', 'sh_announce'].includes(e.key)) this.loadLS();
-    };
-    window.addEventListener('storage', this._onStorage);
+    import('./sweethouse-store.js').then((s) => {
+      this._store = s;
+      this.setState({ cloud: s.isCloud() });
+      this._unOrders = s.watchOrders((list) => this.setState({ orders: list }));
+      this._unArchive = s.watchArchive((list) => this.setState({ archive: list }));
+      this._unSettings = s.watchSettings((set) => {
+        const upd = { soldOut: set.soldOut || [], paused: !!set.paused };
+        if (!this._annInit) { upd.annDraft = set.announce || ''; this._annInit = true; }
+        this.setState(upd);
+      });
+    }).catch((e) => { console.error('store load failed', e); });
   }
 
   componentWillUnmount() {
-    window.removeEventListener('storage', this._onStorage);
+    if (this._unOrders) this._unOrders();
+    if (this._unArchive) this._unArchive();
+    if (this._unSettings) this._unSettings();
     if (this._annTimer) clearTimeout(this._annTimer);
-  }
-
-  loadLS() {
-    try {
-      this.setState({
-        orders: JSON.parse(localStorage.getItem('sh_orders') || '[]'),
-        soldOut: JSON.parse(localStorage.getItem('sh_soldout') || '[]'),
-        paused: localStorage.getItem('sh_paused') === '1',
-        annDraft: localStorage.getItem('sh_announce') || '',
-      });
-    } catch (e) {}
   }
 
   tryPw() {
@@ -179,19 +208,10 @@ class Component extends DCLogic {
     }
   }
 
-  saveSoldOut(list) {
-    this.setState({ soldOut: list });
-    try { localStorage.setItem('sh_soldout', JSON.stringify(list)); } catch (e) {}
-  }
-
-  saveOrders(orders) {
-    this.setState({ orders });
-    try { localStorage.setItem('sh_orders', JSON.stringify(orders)); } catch (e) {}
-  }
-
   renderVals() {
-    const { products, orders, soldOut, authed, pw, pwError, paused, annDraft, annSaved } = this.state;
+    const { products, orders, archive, soldOut, authed, pw, pwError, paused, annDraft, annSaved, showArchive, cloud } = this.state;
     const soldSet = new Set(soldOut);
+    const store = () => this._store;
 
     const adminProducts = products ? products.map((p) => {
       const sold = soldSet.has(p.id);
@@ -211,17 +231,20 @@ class Component extends DCLogic {
           : { background: 'oklch(0.9 0.05 85)', color: '#5C4525', border: 'none', borderRadius: '999px', fontFamily: "'Instrument Sans', sans-serif", fontSize: '12.5px', fontWeight: 600, padding: '8px 16px', cursor: 'pointer', minWidth: '92px' },
         toggle: () => {
           const next = sold ? soldOut.filter((id) => id !== p.id) : soldOut.concat(p.id);
-          this.saveSoldOut(next);
+          this.setState({ soldOut: next });
+          if (store()) store().saveSettings({ soldOut: next });
         },
       };
     }) : undefined;
+
+    const fmtTime = (ts) => new Date(ts).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 
     const sorted = orders.slice().sort((a, b) => b.ts - a.ts);
     const orderCards = sorted.map((o) => {
       const done = o.status === 'done';
       return {
         ...o,
-        timeLabel: new Date(o.ts).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }),
+        timeLabel: fmtTime(o.ts),
         statusLabel: done ? 'done' : 'new',
         statusStyle: done
           ? { background: '#EAE4DA', color: '#8A7C6C', fontSize: '11.5px', fontWeight: 600, letterSpacing: '0.08em', padding: '3px 10px', borderRadius: '999px' }
@@ -235,13 +258,22 @@ class Component extends DCLogic {
         lines: (o.items || []).map((i) => ({ label: i.qty + ' × ' + i.name, amount: '$' + i.price * i.qty })),
         totalLabel: '$' + o.total,
         doneLabel: done ? 'reopen' : 'mark done',
-        toggleDone: () => this.saveOrders(orders.map((x) => (x.num === o.num ? { ...x, status: done ? 'new' : 'done' } : x))),
-        del: () => this.saveOrders(orders.filter((x) => x.num !== o.num)),
+        toggleDone: () => { if (store()) store().updateOrder({ ...o, status: done ? 'new' : 'done' }); },
+        del: () => { if (store()) store().deleteOrder(o); },
       };
     });
 
+    const archSorted = archive.slice().sort((a, b) => (b.archivedTs || b.ts) - (a.archivedTs || a.ts));
+    const archiveCards = archSorted.map((o) => ({
+      ...o,
+      timeLabel: fmtTime(o.ts),
+      itemsText: (o.items || []).map((i) => i.qty + '× ' + i.name).join(', '),
+      totalLabel: '$' + o.total,
+    }));
+
     const newCount = orders.filter((o) => o.status !== 'done').length;
     const pauseBtnBase = { border: 'none', borderRadius: '999px', fontFamily: "'Instrument Sans', sans-serif", fontSize: '12.5px', fontWeight: 600, padding: '9px 18px', cursor: 'pointer', marginTop: '12px' };
+    const modeBase = { borderRadius: '10px', fontSize: '12.5px', padding: '10px 16px', marginTop: '20px', lineHeight: 1.6 };
 
     return {
       locked: !authed,
@@ -252,6 +284,13 @@ class Component extends DCLogic {
       tryPw: () => this.tryPw(),
       pwError,
 
+      modeNote: cloud
+        ? 'cloud sync: ON — orders and toggles are shared across all devices, live.'
+        : 'local mode — orders and toggles only exist in this browser. To make them universal (visible from any device), follow README-FIREBASE.txt: create a free Firebase database and paste its keys into sweethouse-config.js.',
+      modeStyle: cloud
+        ? { ...modeBase, background: 'oklch(0.93 0.05 145)', color: '#2E4A2C' }
+        : { ...modeBase, background: '#F5E9D2', color: '#6B5638' },
+
       pauseNote: paused ? 'customers currently CANNOT place orders' : 'customers can place orders right now',
       pauseBtnLabel: paused ? 'paused — tap to resume' : 'open — tap to pause',
       pauseBtnStyle: paused
@@ -260,13 +299,13 @@ class Component extends DCLogic {
       togglePause: () => {
         const next = !paused;
         this.setState({ paused: next });
-        try { localStorage.setItem('sh_paused', next ? '1' : '0'); } catch (e) {}
+        if (store()) store().saveSettings({ paused: next });
       },
 
       annVal: annDraft,
       setAnn: (e) => this.setState({ annDraft: e.target.value, annSaved: false }),
       saveAnn: () => {
-        try { localStorage.setItem('sh_announce', this.state.annDraft.trim()); } catch (e) {}
+        if (store()) store().saveSettings({ announce: this.state.annDraft.trim() });
         this.setState({ annSaved: true });
         if (this._annTimer) clearTimeout(this._annTimer);
         this._annTimer = setTimeout(() => this.setState({ annSaved: false }), 1600);
@@ -276,9 +315,18 @@ class Component extends DCLogic {
       adminProducts,
       orderCards,
       noOrders: orders.length === 0,
+      hasOrders: orders.length > 0,
       hasDone: orders.some((o) => o.status === 'done'),
-      clearDone: () => this.saveOrders(orders.filter((o) => o.status !== 'done')),
+      archiveDone: () => { if (store()) store().archiveOrders(orders.filter((o) => o.status === 'done')); },
+      archiveAll: () => { if (store()) store().archiveOrders(orders.slice()); },
       orderSummary: orders.length === 0 ? '' : newCount + ' open · ' + orders.length + ' total',
+
+      archiveCards,
+      noArchive: archive.length === 0,
+      archiveSummary: archive.length === 0 ? '' : archive.length + ' past order' + (archive.length === 1 ? '' : 's'),
+      archiveVisible: showArchive,
+      toggleArchive: () => this.setState({ showArchive: !showArchive }),
+      archiveToggleLabel: showArchive ? 'hide history' : 'show history',
     };
   }
 }

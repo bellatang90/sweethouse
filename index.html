@@ -88,7 +88,7 @@ image-slot#hero{height:340px !important;min-height:340px !important}
     <div style="display: flex; gap: 10px; row-gap: 10px; align-items: center; padding: 20px 4px 0; flex-wrap: wrap;">
       <a href="menu.html#cat-bread" style="background: oklch(0.9 0.05 85); color: #33291F; font-size: 13.5px; padding: 8px 18px; border-radius: 999px; text-decoration: none;">bread</a>
       <a href="menu.html#cat-cake" style="background: oklch(0.93 0.035 85); color: #33291F; font-size: 13.5px; padding: 8px 18px; border-radius: 999px; text-decoration: none;">cake</a>
-      <a href="menu.html#cat-pastry" style="background: #F0E9DF; color: #33291F; font-size: 13.5px; padding: 8px 18px; border-radius: 999px; text-decoration: none;">pastry</a>
+      <a href="menu.html#cat-pastry" style="background: #F0E9DF; color: #33291F; font-size: 13.5px; padding: 8px 18px; border-radius: 999px; text-decoration: none;">pastry</a> 999px; text-decoration: none;">pastry</a>
       <span style="margin-left: auto; font-size: 13px; color: #8A7C6C;">no payment online — you pay at pick up</span>
     </div>
   </div>
@@ -245,29 +245,20 @@ class Component extends DCLogic {
 
   componentDidMount() {
     try {
-      this.setState({
-        cart: JSON.parse(localStorage.getItem('sh_cart') || '[]'),
-        soldOut: JSON.parse(localStorage.getItem('sh_soldout') || '[]'),
-        paused: localStorage.getItem('sh_paused') === '1',
-        announce: localStorage.getItem('sh_announce') || '',
-      });
+      this.setState({ cart: JSON.parse(localStorage.getItem('sh_cart') || '[]') });
     } catch (e) {}
     import('./sweethouse-data.js').then((m) => {
       this.setState({ products: m.PRODUCTS, locations: m.LOCATIONS });
     }).catch((e) => { console.error('data load failed', e); });
-    this._onStorage = (e) => {
-      if (e.key === 'sh_paused' || e.key === 'sh_announce') {
-        this.setState({ paused: localStorage.getItem('sh_paused') === '1', announce: localStorage.getItem('sh_announce') || '' });
-      }
-      if (e.key === 'sh_soldout') {
-        try { this.setState({ soldOut: JSON.parse(e.newValue || '[]') }); } catch (err) {}
-      }
-    };
-    window.addEventListener('storage', this._onStorage);
+    import('./sweethouse-store.js').then((s) => {
+      this._unwatch = s.watchSettings((set) => {
+        this.setState({ soldOut: set.soldOut || [], paused: !!set.paused, announce: set.announce || '' });
+      });
+    }).catch((e) => { console.error('store load failed', e); });
   }
 
   componentWillUnmount() {
-    window.removeEventListener('storage', this._onStorage);
+    if (this._unwatch) this._unwatch();
     if (this._addedTimer) clearTimeout(this._addedTimer);
   }
 
@@ -305,18 +296,16 @@ class Component extends DCLogic {
     });
     const total = items.reduce((s, i) => s + i.price * i.qty, 0);
     const loc = (locations || []).find((l) => l.id === locId) || {};
-    let orders = [];
-    try { orders = JSON.parse(localStorage.getItem('sh_orders') || '[]'); } catch (e) {}
     const order = {
-      num: 'SH-' + String(1001 + orders.length),
+      num: 'SH-' + Date.now().toString(36).toUpperCase().slice(-6),
       ts: Date.now(),
       name: name.trim(), phone: phone.trim(), note: note.trim(),
       locId, locName: loc.name || '', items, total, status: 'new',
     };
-    orders.push(order);
-    try { localStorage.setItem('sh_orders', JSON.stringify(orders)); } catch (e) {}
-    this.saveCart([]);
-    this.setState({ placed: order, error: '', note: '' });
+    import('./sweethouse-store.js')
+      .then((s) => s.submitOrder(order))
+      .then(() => { this.saveCart([]); this.setState({ placed: order, error: '', note: '' }); })
+      .catch((e) => { console.error('order submit failed', e); this.setState({ error: 'could not send your order — please try again.' }); });
   }
 
   renderVals() {
