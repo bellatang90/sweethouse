@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
+<script src="image-slot.js"></script>
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;background:#FBF6EC}
+::selection{background:oklch(0.93 0.035 85)}
+@keyframes shFade{from{opacity:0}to{opacity:1}}
+@keyframes shDrawer{from{transform:translateX(48px);opacity:0}to{transform:none;opacity:1}}
+@keyframes shPop{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+@media (max-width: 900px){
+#sh-hero-grid{grid-template-columns:1fr !important}
+#sh-hero-left{padding:36px 26px 30px !important}
+image-slot#hero{height:340px !important;min-height:340px !important}
+}
+@media (max-width: 720px){
+#sh-nav-loc{display:none !important}
+#sh-nav{width:100% !important;justify-content:space-between !important;gap:12px !important}
+#sh-topbar{padding:10px 14px !important}
+#sh-locs-grid{grid-template-columns:1fr !important}
+}
+</style>
+</helmet>
+
+<div style="font-family: 'Instrument Sans', sans-serif; color: #33291F;" data-screen-label="Storefront">
+
+  <!-- ===== Top bar ===== -->
+  <div data-screen-label="Top bar" style="position: sticky; top: 0; z-index: 40; background: rgba(251,248,243,0.92); backdrop-filter: blur(10px); border-bottom: 1px solid #E4DCD0;">
+    <div id="sh-topbar" style="max-width: 1240px; margin: 0 auto; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; row-gap: 10px;">
+      <a href="#top" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: #33291F;">
+        <span style="width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid #33291F; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; background: oklch(0.96 0.025 85); font-family: 'Young Serif', serif; font-size: 10.5px; line-height: 1.05; text-align: center;">Sweet<br>House</span>
+        <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.26em;">SWEETHOUSE</span>
+      </a>
+      <div id="sh-nav" style="display: flex; align-items: center; gap: 26px; flex-wrap: wrap;">
+        <a href="#menu" style="font-size: 12.5px; font-weight: 600; letter-spacing: 0.14em; color: #33291F; text-decoration: none;" style-hover="color: oklch(0.52 0.11 50)">MENU</a>
+        <a id="sh-nav-loc" href="#locations" style="font-size: 12.5px; font-weight: 600; letter-spacing: 0.14em; color: #33291F; text-decoration: none;" style-hover="color: oklch(0.52 0.11 50)">PICK UP LOCATIONS</a>
+        <a href="#menu" style="background: #33291F; color: #FBF6EC; font-size: 12.5px; font-weight: 600; letter-spacing: 0.14em; padding: 11px 24px; border-radius: 999px; text-decoration: none;" style-hover="background: oklch(0.52 0.11 50)">ORDER ONLINE</a>
+        <button onClick="{{ openCart }}" style="display: flex; align-items: center; gap: 7px; background: none; border: none; cursor: pointer; padding: 6px;" aria-label="shopping cart">
+          <svg width="19" height="21" viewBox="0 0 18 20"><rect x="1" y="5" width="16" height="14" rx="2" fill="none" stroke="#33291F" stroke-width="1.5"></rect><path d="M5.5 8 V4.5 a3.5 3.5 0 0 1 7 0 V8" fill="none" stroke="#33291F" stroke-width="1.5"></path></svg>
+          <span style="min-width: 19px; height: 19px; border-radius: 999px; background: oklch(0.62 0.1 55); color: #fff; font-size: 11.5px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; padding: 0 5px;">{{ cartCount }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{ hasAnnouncement }}" hint-placeholder-val="{{ false }}">
+    <div style="background: oklch(0.9 0.05 85); color: #5C4525; text-align: center; font-size: 13.5px; padding: 9px 20px;">{{ announcementText }}</div>
+  </sc-if>
+  <sc-if value="{{ orderingPaused }}" hint-placeholder-val="{{ false }}">
+    <div style="background: #F3E9D8; color: #6B5638; text-align: center; font-size: 13.5px; padding: 9px 20px;">online ordering is paused right now — check back soon!</div>
+  </sc-if>
+
+  <!-- ===== Hero ===== -->
+  <div id="top" data-screen-label="Hero" style="max-width: 1240px; margin: 26px auto 0; padding: 0 24px;">
+    <div id="sh-hero-grid" style="display: grid; grid-template-columns: 5fr 7fr; min-height: 560px; border-radius: 18px; overflow: hidden; border: 1px solid #E4DCD0;">
+      <div id="sh-hero-left" style="background: oklch(0.93 0.035 85); padding: 52px 46px 40px; display: flex; flex-direction: column; justify-content: space-between; gap: 36px;">
+        <div>
+          <div style="font-family: 'Young Serif', serif; font-size: clamp(36px, 4.6vw, 63px); line-height: 1.08;">fresh from<br>our home<br>oven<span style="font-style: italic; color: oklch(0.52 0.11 50);"> daily</span></div>
+          <div style="font-size: 16px; color: #5A4E42; margin-top: 20px; line-height: 1.65;">soft asian-style breads, milk toasts &amp; swiss rolls,<br>baked to order. pay when you pick up.</div>
+          <div style="display: flex; align-items: center; gap: 14px; margin-top: 30px;">
+            <a href="#menu" style="background: #33291F; color: #FBF6EC; font-size: 15px; font-weight: 600; padding: 13px 30px; border-radius: 999px; text-decoration: none;" style-hover="background: oklch(0.52 0.11 50)">order for pick up</a>
+            <a href="#locations" style="font-size: 13.5px; color: #5A4E42; text-decoration: underline; text-underline-offset: 3px;">3 pick up locations</a>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <span style="width: 92px; height: 92px; border-radius: 50%; border: 1.5px solid #33291F; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: #FBF6EC; text-align: center;">
+            <span style="font-size: 6.5px; letter-spacing: 0.26em;">HOME BAKERY</span>
+            <span style="font-family: 'Young Serif', serif; font-size: 16px; line-height: 1.05;">Sweet<br>House</span>
+            <span style="font-size: 6.5px; letter-spacing: 0.26em; color: oklch(0.6 0.11 75);">FRESH DAILY</span>
+          </span>
+          <span style="font-size: 12px; color: #7A6C5C; line-height: 1.6;">small-batch home bakery<br>bread · cake · pastry</span>
+        </div>
+      </div>
+      <image-slot id="hero" src="hero.png" shape="rect" placeholder="Drop your bakery hero photo here" style="width: 100%; height: 100%; min-height: 560px; display: block;"></image-slot>
+    </div>
+
+    <div style="display: flex; gap: 10px; row-gap: 10px; align-items: center; padding: 20px 4px 0; flex-wrap: wrap;">
+      <a href="#cat-bread" style="background: oklch(0.9 0.05 85); color: #33291F; font-size: 13.5px; padding: 8px 18px; border-radius: 999px; text-decoration: none;">bread</a>
+      <a href="#cat-cake" style="background: oklch(0.93 0.035 85); color: #33291F; font-size: 13.5px; padding: 8px 18px; border-radius: 999px; text-decoration: none;">cake</a>
+      <a href="#cat-pastry" style="background: #F0E9DF; color: #33291F; font-size: 13.5px; padding: 8px 18px; border-radius: 999px; text-decoration: none;">pastry</a>
+      <span style="margin-left: auto; font-size: 13px; color: #8A7C6C;">no payment online — you pay at pick up</span>
+    </div>
+  </div>
+
+  <!-- ===== Menu ===== -->
+  <div id="menu" data-screen-label="Menu" style="max-width: 1240px; margin: 70px auto 0; padding: 0 24px; scroll-margin-top: 84px;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+      <div style="font-family: 'Young Serif', serif; font-size: clamp(34px, 7vw, 50px);">order online</div>
+      <div style="font-size: 13.5px; color: #8A7C6C;">tap any item to see its ingredients</div>
+    </div>
+
+    <div id="cat-bread" style="margin-top: 34px; scroll-margin-top: 96px;">
+      <div style="display: flex; align-items: baseline; gap: 14px;">
+        <div style="font-family: 'Young Serif', serif; font-size: 32px;">bread</div>
+        <div style="flex: 1; border-top: 1px solid #E4DCD0;"></div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(252px, 1fr)); gap: 22px; margin-top: 20px;">
+        <sc-for list="{{ breadItems }}" as="item" hint-placeholder-count="6">
+          <div onClick="{{ item.open }}" style="background: #fff; border: 1px solid #E4DCD0; border-radius: 14px; overflow: hidden; cursor: pointer;" style-hover="border-color: #C9BBA8; box-shadow: 0 3px 14px rgba(51,41,31,0.07)">
+            <div style="{{ item.dimStyle }}">
+              <div style="position: relative;">
+                <image-slot id="img-{{ item.id }}" shape="rect" placeholder="{{ item.name }} photo" style="width: 100%; height: 185px; display: block;"></image-slot>
+                <sc-if value="{{ item.soldOut }}" hint-placeholder-val="{{ false }}">
+                  <span style="position: absolute; top: 10px; right: 10px; background: #33291F; color: #FBF6EC; font-size: 11.5px; padding: 4px 11px; border-radius: 999px;">sold out</span>
+                </sc-if>
+              </div>
+              <div style="padding: 14px 16px 16px;">
+                <div style="display: flex; justify-content: space-between; gap: 10px; font-size: 15.5px; font-weight: 600;"><span>{{ item.name }}</span><span>{{ item.priceLabel }}</span></div>
+                <div style="font-size: 12.5px; color: #8A7C6C; margin-top: 5px; min-height: 17px;">{{ item.teaser }}</div>
+                <button onClick="{{ item.add }}" style="{{ item.btnStyle }}">{{ item.btnLabel }}</button>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div id="cat-cake" style="margin-top: 46px; scroll-margin-top: 96px;">
+      <div style="display: flex; align-items: baseline; gap: 14px;">
+        <div style="font-family: 'Young Serif', serif; font-size: 32px;">cake</div>
+        <div style="font-size: 12.5px; color: #8A7C6C;">swiss rolls in three flavors</div>
+        <div style="flex: 1; border-top: 1px solid #E4DCD0;"></div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(252px, 1fr)); gap: 22px; margin-top: 20px;">
+        <sc-for list="{{ cakeItems }}" as="item" hint-placeholder-count="3">
+          <div onClick="{{ item.open }}" style="background: #fff; border: 1px solid #E4DCD0; border-radius: 14px; overflow: hidden; cursor: pointer;" style-hover="border-color: #C9BBA8; box-shadow: 0 3px 14px rgba(51,41,31,0.07)">
+            <div style="{{ item.dimStyle }}">
+              <div style="position: relative;">
+                <image-slot id="img-{{ item.id }}" shape="rect" placeholder="{{ item.name }} photo" style="width: 100%; height: 185px; display: block;"></image-slot>
+                <sc-if value="{{ item.soldOut }}" hint-placeholder-val="{{ false }}">
+                  <span style="position: absolute; top: 10px; right: 10px; background: #33291F; color: #FBF6EC; font-size: 11.5px; padding: 4px 11px; border-radius: 999px;">sold out</span>
+                </sc-if>
+              </div>
+              <div style="padding: 14px 16px 16px;">
+                <div style="display: flex; justify-content: space-between; gap: 10px; font-size: 15.5px; font-weight: 600;"><span>{{ item.name }}</span><span>{{ item.priceLabel }}</span></div>
+                <div style="font-size: 12.5px; color: #8A7C6C; margin-top: 5px; min-height: 17px;">{{ item.teaser }}</div>
+                <button onClick="{{ item.add }}" style="{{ item.btnStyle }}">{{ item.btnLabel }}</button>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div id="cat-pastry" style="margin-top: 46px; scroll-margin-top: 96px;">
+      <div style="display: flex; align-items: baseline; gap: 14px;">
+        <div style="font-family: 'Young Serif', serif; font-size: 32px;">pastry</div>
+        <div style="flex: 1; border-top: 1px solid #E4DCD0;"></div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(252px, 1fr)); gap: 22px; margin-top: 20px;">
+        <sc-for list="{{ pastryItems }}" as="item" hint-placeholder-count="2">
+          <div onClick="{{ item.open }}" style="background: #fff; border: 1px solid #E4DCD0; border-radius: 14px; overflow: hidden; cursor: pointer;" style-hover="border-color: #C9BBA8; box-shadow: 0 3px 14px rgba(51,41,31,0.07)">
+            <div style="{{ item.dimStyle }}">
+              <div style="position: relative;">
+                <image-slot id="img-{{ item.id }}" shape="rect" placeholder="{{ item.name }} photo" style="width: 100%; height: 185px; display: block;"></image-slot>
+                <sc-if value="{{ item.soldOut }}" hint-placeholder-val="{{ false }}">
+                  <span style="position: absolute; top: 10px; right: 10px; background: #33291F; color: #FBF6EC; font-size: 11.5px; padding: 4px 11px; border-radius: 999px;">sold out</span>
+                </sc-if>
+              </div>
+              <div style="padding: 14px 16px 16px;">
+                <div style="display: flex; justify-content: space-between; gap: 10px; font-size: 15.5px; font-weight: 600;"><span>{{ item.name }}</span><span>{{ item.priceLabel }}</span></div>
+                <div style="font-size: 12.5px; color: #8A7C6C; margin-top: 5px; min-height: 17px;">{{ item.teaser }}</div>
+                <button onClick="{{ item.add }}" style="{{ item.btnStyle }}">{{ item.btnLabel }}</button>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Locations ===== -->
+  <div id="locations" data-screen-label="Pick up locations" style="max-width: 1240px; margin: 80px auto 0; padding: 0 24px; scroll-margin-top: 84px;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+      <div style="font-family: 'Young Serif', serif; font-size: clamp(34px, 7vw, 50px);">pick up locations</div>
+      <div style="font-size: 13.5px; color: #8A7C6C;">payment is handled at pick up — cash or venmo</div>
+    </div>
+    <div id="sh-locs-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 26px;">
+      <sc-for list="{{ locationCards }}" as="loc" hint-placeholder-count="3">
+        <div style="background: oklch(0.975 0.012 85); border: 1px solid #E4DCD0; border-radius: 14px; padding: 24px 24px 22px;">
+          <div style="font-family: 'Young Serif', serif; font-size: 23px;">{{ loc.name }}</div>
+          <div style="font-size: 13.5px; color: #5A4E42; margin-top: 8px;">{{ loc.address }}</div>
+          <div style="font-size: 12.5px; color: #8A7C6C; margin-top: 12px; letter-spacing: 0.04em;">{{ loc.hours }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- ===== Footer ===== -->
+  <div data-screen-label="Footer" style="margin-top: 90px; border-top: 1px solid #E4DCD0; background: oklch(0.975 0.012 85);">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 44px 24px 34px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <span style="width: 64px; height: 64px; border-radius: 50%; border: 1.5px solid #33291F; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; background: #FBF6EC; font-family: 'Young Serif', serif; font-size: 12px; line-height: 1.05; text-align: center;">Sweet<br>House</span>
+        <span style="font-size: 12.5px; color: #7A6C5C; line-height: 1.7;">sweethouse home bakery<br>order online · pay at pick up</span>
+      </div>
+      <div style="display: flex; gap: 22px; align-items: center; font-size: 13px;">
+        <a href="#menu" style="color: #5A4E42;">menu</a>
+        <a href="#locations" style="color: #5A4E42;">pick up</a>
+        <a href="SweetHouse Admin.dc.html" style="color: #B9AC9B;">admin</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Cart drawer ===== -->
+  <sc-if value="{{ cartOpen }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Cart drawer" onClick="{{ closeCart }}" style="position: fixed; inset: 0; z-index: 60; background: rgba(40,32,25,0.38); animation: shFade 0.2s ease;">
+      <div onClick="{{ stop }}" style="position: absolute; top: 0; right: 0; bottom: 0; width: 430px; max-width: 92vw; background: #FBF6EC; box-shadow: -12px 0 40px rgba(40,32,25,0.18); display: flex; flex-direction: column; animation: shDrawer 0.25s ease;">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #E4DCD0;">
+          <div style="font-family: 'Young Serif', serif; font-size: 26px;">your order</div>
+          <button onClick="{{ closeCart }}" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #8A7C6C; padding: 4px 8px;">×</button>
+        </div>
+
+        <div style="flex: 1; overflow-y: auto; padding: 20px 24px 28px;">
+          <sc-if value="{{ showConfirmation }}" hint-placeholder-val="{{ false }}">
+            <div style="animation: shPop 0.3s ease;">
+              <div style="font-family: 'Young Serif', serif; font-size: 34px;">thank you!</div>
+              <div style="font-size: 14px; color: #5A4E42; margin-top: 8px; line-height: 1.6;">your order is in. we'll text you to confirm your pick up time.</div>
+              <div style="background: #fff; border: 1px solid #E4DCD0; border-radius: 12px; padding: 18px 20px; margin-top: 18px;">
+                <div style="font-family: ui-monospace, Menlo, monospace; font-size: 13px; color: oklch(0.52 0.11 50); font-weight: 600;">order {{ placedNum }}</div>
+                <div style="display: flex; flex-direction: column; gap: 7px; margin-top: 12px;">
+                  <sc-for list="{{ placedItems }}" as="line" hint-placeholder-count="2">
+                    <div style="display: flex; justify-content: space-between; font-size: 13.5px; color: #33291F;"><span>{{ line.label }}</span><span>{{ line.amount }}</span></div>
+                  </sc-for>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 14.5px; font-weight: 600; border-top: 1px solid #E4DCD0; margin-top: 12px; padding-top: 10px;"><span>total at pick up</span><span>{{ placedTotal }}</span></div>
+                <div style="font-size: 12.5px; color: #8A7C6C; margin-top: 10px;">pick up: {{ placedLoc }}</div>
+              </div>
+              <button onClick="{{ closeConfirm }}" style="width: 100%; margin-top: 18px; background: #33291F; color: #FBF6EC; border: none; font-family: 'Instrument Sans', sans-serif; font-size: 14.5px; font-weight: 600; padding: 13px; border-radius: 999px; cursor: pointer;">done</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ showCartForm }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size: 14px; color: #8A7C6C; text-align: center; padding: 34px 10px; line-height: 1.7;">your cart is empty.<br><a href="#menu" onClick="{{ closeCart }}" style="color: oklch(0.52 0.11 50);">browse the menu</a> to add something.</div>
+              </sc-if>
+
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <sc-for list="{{ cartItems }}" as="row" hint-placeholder-count="0">
+                  <div style="display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid #E4DCD0; border-radius: 12px; padding: 12px 14px;">
+                    <div style="flex: 1; min-width: 0;">
+                      <div style="font-size: 13.5px; font-weight: 500;">{{ row.name }}</div>
+                      <div style="font-size: 12px; color: #8A7C6C; margin-top: 2px;">{{ row.each }} each</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <button onClick="{{ row.dec }}" style="width: 34px; height: 34px; border-radius: 999px; border: 1px solid #D8CDBE; background: #FBF6EC; cursor: pointer; font-size: 16px; line-height: 1; color: #33291F;">−</button>
+                      <span style="font-size: 13.5px; min-width: 16px; text-align: center;">{{ row.qty }}</span>
+                      <button onClick="{{ row.inc }}" style="width: 34px; height: 34px; border-radius: 999px; border: 1px solid #D8CDBE; background: #FBF6EC; cursor: pointer; font-size: 16px; line-height: 1; color: #33291F;">+</button>
+                    </div>
+                    <div style="font-size: 13.5px; font-weight: 500; min-width: 42px; text-align: right;">{{ row.line }}</div>
+                    <button onClick="{{ row.remove }}" style="background: none; border: none; color: #B9AC9B; cursor: pointer; font-size: 16px; padding: 2px 4px;">×</button>
+                  </div>
+                </sc-for>
+              </div>
+
+              <sc-if value="{{ cartHasItems }}" hint-placeholder-val="{{ false }}">
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 600; padding: 16px 4px 0;"><span>total at pick up</span><span>{{ cartTotalLabel }}</span></div>
+                  <div style="font-size: 12px; color: #8A7C6C; padding: 4px 4px 0;">no payment now — pay cash or venmo when you collect.</div>
+
+                  <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.14em; color: #8A7C6C; margin: 22px 0 10px;">PICK UP LOCATION</div>
+                  <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <sc-for list="{{ pickLocs }}" as="loc" hint-placeholder-count="3">
+                      <button onClick="{{ loc.pick }}" style="{{ loc.rowStyle }}">
+                        <span style="display: flex; justify-content: space-between; gap: 10px; width: 100%;"><span style="font-weight: 500;">{{ loc.name }}</span><span style="color: #8A7C6C; font-size: 12px;">{{ loc.hours }}</span></span>
+                      </button>
+                    </sc-for>
+                  </div>
+
+                  <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.14em; color: #8A7C6C; margin: 22px 0 10px;">YOUR DETAILS</div>
+                  <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <input value="{{ nameVal }}" onInput="{{ setName }}" placeholder="your name" style="font-family: 'Instrument Sans', sans-serif; font-size: 16px; padding: 12px 14px; border: 1px solid #D8CDBE; border-radius: 10px; background: #fff; color: #33291F; outline: none;">
+                    <input value="{{ phoneVal }}" onInput="{{ setPhone }}" placeholder="phone number" style="font-family: 'Instrument Sans', sans-serif; font-size: 16px; padding: 12px 14px; border: 1px solid #D8CDBE; border-radius: 10px; background: #fff; color: #33291F; outline: none;">
+                    <textarea value="{{ noteVal }}" onInput="{{ setNote }}" placeholder="note (optional) — e.g. preferred pick up day" rows="2" style="font-family: 'Instrument Sans', sans-serif; font-size: 16px; padding: 12px 14px; border: 1px solid #D8CDBE; border-radius: 10px; background: #fff; color: #33291F; outline: none; resize: vertical;"></textarea>
+                  </div>
+
+                  <sc-if value="{{ hasError }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size: 13px; color: #A8503C; margin-top: 12px;">{{ errorText }}</div>
+                  </sc-if>
+
+                  <button onClick="{{ placeOrder }}" style="width: 100%; margin-top: 16px; background: #33291F; color: #FBF6EC; border: none; font-family: 'Instrument Sans', sans-serif; font-size: 15px; font-weight: 600; padding: 14px; border-radius: 999px; cursor: pointer;" style-hover="background: oklch(0.52 0.11 50)">place order — pay at pick up</button>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===== Ingredients modal ===== -->
+  <sc-if value="{{ infoOpen }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Ingredients modal" onClick="{{ closeInfo }}" style="position: fixed; inset: 0; z-index: 70; background: rgba(40,32,25,0.38); display: flex; align-items: center; justify-content: center; padding: 24px; animation: shFade 0.2s ease;">
+      <div onClick="{{ stop }}" style="width: 470px; max-width: 94vw; background: #FBF6EC; border-radius: 18px; padding: 28px 30px; animation: shPop 0.25s ease; position: relative;">
+        <button onClick="{{ closeInfo }}" style="position: absolute; top: 14px; right: 16px; background: none; border: none; font-size: 22px; cursor: pointer; color: #8A7C6C;">×</button>
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.2em; color: oklch(0.6 0.11 75);">{{ infoCat }}</div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-top: 6px;">
+          <div style="font-family: 'Young Serif', serif; font-size: 30px; line-height: 1.15;">{{ infoName }}</div>
+          <div style="font-family: 'Young Serif', serif; font-size: 24px; color: oklch(0.52 0.11 50);">{{ infoPrice }}</div>
+        </div>
+        <sc-if value="{{ infoSoldOut }}" hint-placeholder-val="{{ false }}">
+          <div style="display: inline-block; background: #33291F; color: #FBF6EC; font-size: 12px; padding: 4px 12px; border-radius: 999px; margin-top: 10px;">sold out today</div>
+        </sc-if>
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.14em; color: #8A7C6C; margin: 20px 0 10px;">INGREDIENTS</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <sc-for list="{{ infoIngredients }}" as="ing" hint-placeholder-count="6">
+            <span style="background: #fff; border: 1px solid #E4DCD0; font-size: 13px; padding: 6px 13px; border-radius: 999px; color: #5A4E42;">{{ ing }}</span>
+          </sc-for>
+        </div>
+        <div style="font-size: 12.5px; color: #8A7C6C; margin-top: 14px;">{{ infoContains }}</div>
+        <button onClick="{{ infoAdd }}" style="{{ infoBtnStyle }}">{{ infoBtnLabel }}</button>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;announcement&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;This week: try the fresh Matcha cake!&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Storefront&quot;},&quot;orderingEnabled&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Storefront&quot;}}">
+class Component extends DCLogic {
+  state = {
+    products: null,
+    locations: null,
+    cart: [],
+    soldOut: [],
+    cartOpen: false,
+    infoId: null,
+    placed: null,
+    addedId: null,
+    name: '',
+    phone: '',
+    note: '',
+    locId: null,
+    error: '',
+  };
+
+  componentDidMount() {
+    try {
+      this.setState({
+        cart: JSON.parse(localStorage.getItem('sh_cart') || '[]'),
+        soldOut: JSON.parse(localStorage.getItem('sh_soldout') || '[]'),
+      });
+    } catch (e) {}
+    import('./sweethouse-data.js').then((m) => {
+      this.setState({ products: m.PRODUCTS, locations: m.LOCATIONS });
+    }).catch((e) => { console.error('data load failed', e); });
+    this._onStorage = (e) => {
+      if (e.key === 'sh_soldout') {
+        try { this.setState({ soldOut: JSON.parse(e.newValue || '[]') }); } catch (err) {}
+      }
+    };
+    window.addEventListener('storage', this._onStorage);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('storage', this._onStorage);
+    if (this._addedTimer) clearTimeout(this._addedTimer);
+  }
+
+  saveCart(cart) {
+    this.setState({ cart });
+    try { localStorage.setItem('sh_cart', JSON.stringify(cart)); } catch (e) {}
+  }
+
+  addToCart(id) {
+    const cart = this.state.cart.map((r) => ({ ...r }));
+    const row = cart.find((r) => r.id === id);
+    if (row) row.qty += 1; else cart.push({ id, qty: 1 });
+    this.saveCart(cart);
+    this.setState({ addedId: id });
+    if (this._addedTimer) clearTimeout(this._addedTimer);
+    this._addedTimer = setTimeout(() => this.setState({ addedId: null }), 1100);
+  }
+
+  changeQty(id, d) {
+    const cart = this.state.cart
+      .map((r) => (r.id === id ? { ...r, qty: r.qty + d } : r))
+      .filter((r) => r.qty > 0);
+    this.saveCart(cart);
+  }
+
+  placeOrder() {
+    const { cart, name, phone, locId, note, products, locations } = this.state;
+    if (!cart.length) { this.setState({ error: 'your cart is empty.' }); return; }
+    if (!name.trim()) { this.setState({ error: 'please add your name.' }); return; }
+    if (!phone.trim()) { this.setState({ error: 'please add a phone number so we can confirm.' }); return; }
+    if (!locId) { this.setState({ error: 'please choose a pick up location.' }); return; }
+    const items = cart.map((r) => {
+      const p = (products || []).find((x) => x.id === r.id) || { name: r.id, price: 0 };
+      return { id: r.id, name: p.name, price: p.price, qty: r.qty };
+    });
+    const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+    const loc = (locations || []).find((l) => l.id === locId) || {};
+    let orders = [];
+    try { orders = JSON.parse(localStorage.getItem('sh_orders') || '[]'); } catch (e) {}
+    const order = {
+      num: 'SH-' + String(1001 + orders.length),
+      ts: Date.now(),
+      name: name.trim(), phone: phone.trim(), note: note.trim(),
+      locId, locName: loc.name || '', items, total, status: 'new',
+    };
+    orders.push(order);
+    try { localStorage.setItem('sh_orders', JSON.stringify(orders)); } catch (e) {}
+    this.saveCart([]);
+    this.setState({ placed: order, error: '', note: '' });
+  }
+
+  renderVals() {
+    const { products, locations, cart, soldOut, cartOpen, infoId, placed, addedId, name, phone, note, locId, error } = this.state;
+    const orderingOn = this.props.orderingEnabled ?? true;
+    const soldSet = new Set(soldOut);
+
+    const btnBase = {
+      width: '100%', marginTop: '12px', border: 'none', borderRadius: '999px',
+      fontFamily: "'Instrument Sans', sans-serif", fontSize: '14px', fontWeight: 600,
+      padding: '10px', transition: 'background 0.15s',
+    };
+    const mk = (p) => {
+      const sold = soldSet.has(p.id);
+      const disabled = sold || !orderingOn;
+      return {
+        ...p,
+        priceLabel: '$' + p.price,
+        teaser: p.ingredients.slice(0, 3).join(' · '),
+        soldOut: sold,
+        dimStyle: sold ? { opacity: 0.45, filter: 'grayscale(1)' } : {},
+        open: () => this.setState({ infoId: p.id }),
+        add: (e) => { if (e && e.stopPropagation) e.stopPropagation(); if (!disabled) this.addToCart(p.id); },
+        btnLabel: sold ? 'sold out' : (!orderingOn ? 'ordering paused' : (addedId === p.id ? 'added ✓' : 'add to order')),
+        btnStyle: disabled
+          ? { ...btnBase, background: '#EAE4DA', color: '#9A8D7D', cursor: 'default' }
+          : { ...btnBase, background: addedId === p.id ? 'oklch(0.6 0.11 75)' : '#33291F', color: '#FBF6EC', cursor: 'pointer' },
+      };
+    };
+    const all = products ? products.map(mk) : null;
+    const byCat = (c) => (all ? all.filter((p) => p.cat === c) : undefined);
+
+    const cartItems = cart.map((r) => {
+      const p = (products || []).find((x) => x.id === r.id) || { name: '…', price: 0 };
+      return {
+        id: r.id, name: p.name, qty: r.qty,
+        each: '$' + p.price, line: '$' + p.price * r.qty,
+        inc: () => this.changeQty(r.id, 1),
+        dec: () => this.changeQty(r.id, -1),
+        remove: () => this.saveCart(cart.filter((x) => x.id !== r.id)),
+      };
+    });
+    const cartCount = cart.reduce((s, r) => s + r.qty, 0);
+    const cartTotal = cartItems.reduce((s, r) => {
+      const p = (products || []).find((x) => x.id === r.id) || { price: 0 };
+      return s + p.price * r.qty;
+    }, 0);
+
+    const locRowBase = {
+      width: '100%', textAlign: 'left', display: 'flex', alignItems: 'center',
+      fontFamily: "'Instrument Sans', sans-serif", fontSize: '13.5px', color: '#33291F',
+      padding: '12px 14px', borderRadius: '10px', cursor: 'pointer', background: '#fff',
+    };
+    const pickLocs = (locations || []).map((l) => ({
+      ...l,
+      pick: () => this.setState({ locId: l.id, error: '' }),
+      rowStyle: l.id === locId
+        ? { ...locRowBase, border: '1.5px solid #33291F', background: 'oklch(0.96 0.025 85)' }
+        : { ...locRowBase, border: '1px solid #D8CDBE' },
+    }));
+
+    const info = infoId && products ? products.find((p) => p.id === infoId) : null;
+    const infoM = info ? mk(info) : null;
+    const containsOf = (p) => {
+      if (!p) return '';
+      const has = (kw) => p.ingredients.some((i) => i.includes(kw));
+      const list = [];
+      if (has('flour')) list.push('wheat');
+      if (has('milk') || has('butter') || has('cream') || has('cheese')) list.push('dairy');
+      if (has('egg') || has('mayonnaise')) list.push('egg');
+      if (has('sesame')) list.push('sesame');
+      return list.length ? 'contains: ' + list.join(', ') : '';
+    };
+
+    return {
+      cartCount,
+      openCart: () => this.setState({ cartOpen: true }),
+      closeCart: () => this.setState({ cartOpen: false, placed: null, error: '' }),
+      stop: (e) => e.stopPropagation(),
+
+      hasAnnouncement: !!(this.props.announcement && String(this.props.announcement).trim()),
+      announcementText: this.props.announcement || '',
+      orderingPaused: !orderingOn,
+
+      breadItems: byCat('bread'),
+      cakeItems: byCat('cake'),
+      pastryItems: byCat('pastry'),
+      locationCards: locations || undefined,
+
+      cartOpen,
+      showConfirmation: !!placed,
+      showCartForm: !placed,
+      cartEmpty: cartItems.length === 0,
+      cartHasItems: cartItems.length > 0,
+      cartItems,
+      cartTotalLabel: '$' + cartTotal,
+      pickLocs,
+      nameVal: name, phoneVal: phone, noteVal: note,
+      setName: (e) => this.setState({ name: e.target.value, error: '' }),
+      setPhone: (e) => this.setState({ phone: e.target.value, error: '' }),
+      setNote: (e) => this.setState({ note: e.target.value }),
+      hasError: !!error,
+      errorText: error,
+      placeOrder: () => this.placeOrder(),
+
+      placedNum: placed ? placed.num : '',
+      placedItems: placed ? placed.items.map((i) => ({ label: i.qty + ' × ' + i.name, amount: '$' + i.price * i.qty })) : [],
+      placedTotal: placed ? '$' + placed.total : '',
+      placedLoc: placed ? placed.locName : '',
+      closeConfirm: () => this.setState({ placed: null, cartOpen: false }),
+
+      infoOpen: !!info,
+      closeInfo: () => this.setState({ infoId: null }),
+      infoName: info ? info.name : '',
+      infoCat: info ? info.cat.toUpperCase() : '',
+      infoPrice: info ? '$' + info.price : '',
+      infoSoldOut: infoM ? infoM.soldOut : false,
+      infoIngredients: info ? info.ingredients : [],
+      infoContains: containsOf(info),
+      infoAdd: infoM ? infoM.add : () => {},
+      infoBtnLabel: infoM ? infoM.btnLabel : '',
+      infoBtnStyle: infoM ? { ...infoM.btnStyle, marginTop: '22px', padding: '13px', fontSize: '14.5px' } : {},
+    };
+  }
+}
+
+</script>
+</body>
+</html>

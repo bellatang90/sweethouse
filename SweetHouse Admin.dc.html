@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBF6EC}
+::selection{background:oklch(0.93 0.035 85)}
+</style>
+</helmet>
+
+<div style="font-family: 'Instrument Sans', sans-serif; color: #33291F; max-width: 1020px; margin: 0 auto; padding: 26px 24px 80px;" data-screen-label="Admin">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <span style="width: 52px; height: 52px; border-radius: 50%; border: 1.5px solid #33291F; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; background: oklch(0.96 0.025 85); font-family: 'Young Serif', serif; font-size: 11px; line-height: 1.05; text-align: center;">Sweet<br>House</span>
+      <div>
+        <div style="font-family: 'Young Serif', serif; font-size: 34px; line-height: 1.1;">admin</div>
+        <div style="font-size: 12.5px; color: #8A7C6C;">availability &amp; orders</div>
+      </div>
+    </div>
+    <a href="SweetHouse.dc.html" style="font-size: 13.5px; color: #5A4E42; text-decoration: none; border: 1px solid #D8CDBE; padding: 9px 18px; border-radius: 999px;" style-hover="border-color: #33291F">← back to storefront</a>
+  </div>
+
+  <div style="background: #F3E9D8; border-radius: 10px; font-size: 12.5px; color: #6B5638; padding: 10px 16px; margin-top: 20px; line-height: 1.6;">this page saves to <b>this browser</b>. sold-out toggles apply to the storefront instantly. orders appear here when placed in this same browser — for a public launch you'll want orders forwarded to you (email / text); ask me and I'll add it.</div>
+
+  <!-- ===== Availability ===== -->
+  <div data-screen-label="Availability" style="margin-top: 36px;">
+    <div style="display: flex; align-items: baseline; gap: 14px;">
+      <div style="font-family: 'Young Serif', serif; font-size: 30px;">product availability</div>
+      <div style="flex: 1; border-top: 1px solid #E4DCD0;"></div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; margin-top: 18px;">
+      <sc-for list="{{ adminProducts }}" as="item" hint-placeholder-count="8">
+        <div style="{{ item.rowStyle }}">
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 14px; font-weight: 500;">{{ item.name }}</div>
+            <div style="font-size: 12px; color: #8A7C6C; margin-top: 2px;">{{ item.catLabel }} · {{ item.priceLabel }}</div>
+          </div>
+          <button onClick="{{ item.toggle }}" style="{{ item.btnStyle }}">{{ item.btnLabel }}</button>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- ===== Orders ===== -->
+  <div data-screen-label="Orders" style="margin-top: 46px;">
+    <div style="display: flex; align-items: baseline; gap: 14px;">
+      <div style="font-family: 'Young Serif', serif; font-size: 30px;">orders</div>
+      <div style="font-size: 13px; color: #8A7C6C;">{{ orderSummary }}</div>
+      <div style="flex: 1; border-top: 1px solid #E4DCD0;"></div>
+      <sc-if value="{{ hasDone }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ clearDone }}" style="background: none; border: 1px solid #D8CDBE; border-radius: 999px; font-family: 'Instrument Sans', sans-serif; font-size: 12.5px; color: #5A4E42; padding: 7px 16px; cursor: pointer;">clear completed</button>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{ noOrders }}" hint-placeholder-val="{{ false }}">
+      <div style="text-align: center; color: #8A7C6C; font-size: 14px; padding: 44px 20px; line-height: 1.7;">no orders yet.<br>orders placed on the storefront (in this browser) will show up here.</div>
+    </sc-if>
+
+    <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 18px;">
+      <sc-for list="{{ orderCards }}" as="ord" hint-placeholder-count="0">
+        <div style="{{ ord.cardStyle }}">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <span style="font-family: ui-monospace, Menlo, monospace; font-size: 13.5px; font-weight: 600; color: oklch(0.52 0.11 50);">{{ ord.num }}</span>
+            <span style="font-size: 12.5px; color: #8A7C6C;">{{ ord.timeLabel }}</span>
+            <span style="{{ ord.statusStyle }}">{{ ord.statusLabel }}</span>
+            <span style="flex: 1;"></span>
+            <button onClick="{{ ord.toggleDone }}" style="background: #33291F; color: #FBF6EC; border: none; border-radius: 999px; font-family: 'Instrument Sans', sans-serif; font-size: 12.5px; padding: 7px 16px; cursor: pointer;">{{ ord.doneLabel }}</button>
+            <button onClick="{{ ord.del }}" style="background: none; border: 1px solid #D8CDBE; border-radius: 999px; font-family: 'Instrument Sans', sans-serif; font-size: 12.5px; color: #8A7C6C; padding: 7px 14px; cursor: pointer;">delete</button>
+          </div>
+          <div style="display: flex; gap: 26px; flex-wrap: wrap; margin-top: 12px; font-size: 13.5px;">
+            <span><b>{{ ord.name }}</b> · {{ ord.phone }}</span>
+            <span style="color: #5A4E42;">{{ ord.locName }}</span>
+          </div>
+          <sc-if value="{{ ord.hasNote }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size: 13px; color: #6B5638; background: #F7F1E6; border-radius: 8px; padding: 8px 12px; margin-top: 10px;">“{{ ord.note }}”</div>
+          </sc-if>
+          <div style="display: flex; flex-direction: column; gap: 5px; margin-top: 12px; border-top: 1px dashed #E4DCD0; padding-top: 10px;">
+            <sc-for list="{{ ord.lines }}" as="line" hint-placeholder-count="0">
+              <div style="display: flex; justify-content: space-between; font-size: 13.5px;"><span>{{ line.label }}</span><span style="color: #5A4E42;">{{ line.amount }}</span></div>
+            </sc-for>
+            <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-top: 4px;"><span>total due at pick up</span><span>{{ ord.totalLabel }}</span></div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { products: null, orders: [], soldOut: [] };
+
+  componentDidMount() {
+    this.loadLS();
+    import('./sweethouse-data.js').then((m) => {
+      this.setState({ products: m.PRODUCTS });
+    }).catch((e) => { console.error('data load failed', e); });
+    this._onStorage = (e) => {
+      if (e.key === 'sh_orders' || e.key === 'sh_soldout') this.loadLS();
+    };
+    window.addEventListener('storage', this._onStorage);
+  }
+
+  componentWillUnmount() { window.removeEventListener('storage', this._onStorage); }
+
+  loadLS() {
+    try {
+      this.setState({
+        orders: JSON.parse(localStorage.getItem('sh_orders') || '[]'),
+        soldOut: JSON.parse(localStorage.getItem('sh_soldout') || '[]'),
+      });
+    } catch (e) {}
+  }
+
+  saveSoldOut(list) {
+    this.setState({ soldOut: list });
+    try { localStorage.setItem('sh_soldout', JSON.stringify(list)); } catch (e) {}
+  }
+
+  saveOrders(orders) {
+    this.setState({ orders });
+    try { localStorage.setItem('sh_orders', JSON.stringify(orders)); } catch (e) {}
+  }
+
+  renderVals() {
+    const { products, orders, soldOut } = this.state;
+    const soldSet = new Set(soldOut);
+
+    const adminProducts = products ? products.map((p) => {
+      const sold = soldSet.has(p.id);
+      return {
+        ...p,
+        catLabel: p.cat,
+        priceLabel: '$' + p.price,
+        rowStyle: {
+          display: 'flex', alignItems: 'center', gap: '12px',
+          background: sold ? '#F2EDE5' : '#fff',
+          border: '1px solid #E4DCD0', borderRadius: '12px', padding: '12px 16px',
+          opacity: sold ? 0.75 : 1,
+        },
+        btnLabel: sold ? 'sold out' : 'available',
+        btnStyle: sold
+          ? { background: '#8A7C6C', color: '#FBF6EC', border: 'none', borderRadius: '999px', fontFamily: "'Instrument Sans', sans-serif", fontSize: '12.5px', fontWeight: 600, padding: '8px 16px', cursor: 'pointer', minWidth: '92px' }
+          : { background: 'oklch(0.9 0.05 85)', color: '#5C4525', border: 'none', borderRadius: '999px', fontFamily: "'Instrument Sans', sans-serif", fontSize: '12.5px', fontWeight: 600, padding: '8px 16px', cursor: 'pointer', minWidth: '92px' },
+        toggle: () => {
+          const next = sold ? soldOut.filter((id) => id !== p.id) : soldOut.concat(p.id);
+          this.saveSoldOut(next);
+        },
+      };
+    }) : undefined;
+
+    const sorted = orders.slice().sort((a, b) => b.ts - a.ts);
+    const orderCards = sorted.map((o) => {
+      const done = o.status === 'done';
+      return {
+        ...o,
+        timeLabel: new Date(o.ts).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }),
+        statusLabel: done ? 'done' : 'new',
+        statusStyle: done
+          ? { background: '#EAE4DA', color: '#8A7C6C', fontSize: '11.5px', fontWeight: 600, letterSpacing: '0.08em', padding: '3px 10px', borderRadius: '999px' }
+          : { background: 'oklch(0.93 0.035 85)', color: 'oklch(0.46 0.1 55)', fontSize: '11.5px', fontWeight: 600, letterSpacing: '0.08em', padding: '3px 10px', borderRadius: '999px' },
+        cardStyle: {
+          background: done ? '#F5F1EA' : '#fff',
+          border: '1px solid #E4DCD0', borderRadius: '14px', padding: '16px 20px',
+          opacity: done ? 0.7 : 1,
+        },
+        hasNote: !!(o.note && o.note.trim()),
+        lines: (o.items || []).map((i) => ({ label: i.qty + ' × ' + i.name, amount: '$' + i.price * i.qty })),
+        totalLabel: '$' + o.total,
+        doneLabel: done ? 'reopen' : 'mark done',
+        toggleDone: () => this.saveOrders(orders.map((x) => (x.num === o.num ? { ...x, status: done ? 'new' : 'done' } : x))),
+        del: () => this.saveOrders(orders.filter((x) => x.num !== o.num)),
+      };
+    });
+
+    const newCount = orders.filter((o) => o.status !== 'done').length;
+    return {
+      adminProducts,
+      orderCards,
+      noOrders: orders.length === 0,
+      hasDone: orders.some((o) => o.status === 'done'),
+      clearDone: () => this.saveOrders(orders.filter((o) => o.status !== 'done')),
+      orderSummary: orders.length === 0 ? '' : newCount + ' open · ' + orders.length + ' total',
+    };
+  }
+}
+
+</script>
+</body>
+</html>
