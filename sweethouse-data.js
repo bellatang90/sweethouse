@@ -1,10 +1,13 @@
 // SweetHouse product catalog — edit names, prices, and ingredients here.
+// To add a product photo: put the image file in the menu_photos/ folder,
+// then add a line like   photo: 'menu_photos/your-file.jpeg',   to the item.
+// Items without a photo show a neutral placeholder on the menu.
 export const PRODUCTS = [
   { id: 'red-bean-cheese', cat: 'bread', name: 'red bean cheese bread', price: 4,
     ingredients: ['bread flour', 'whole milk', 'egg', 'sugar', 'yeast', 'butter', 'red bean paste', 'cream cheese', 'salt'] },
   { id: 'taro-cheese', cat: 'bread', name: 'taro cheese bread', price: 4,
     ingredients: ['bread flour', 'whole milk', 'egg', 'sugar', 'yeast', 'butter', 'taro paste', 'cream cheese', 'salt'] },
-  { id: 'hot-dog', cat: 'bread', name: 'hot dog bread', price: 5,
+  { id: 'hot-dog', cat: 'bread', name: 'hot dog bread', price: 5, photo: 'menu_photos/hot-dog.jpeg',
     ingredients: ['bread flour', 'whole milk', 'egg', 'sugar', 'yeast', 'butter', 'hot dog sausage', 'green onion', 'sesame', 'salt'] },
   { id: 'taro-pork-floss', cat: 'bread', name: 'taro & pork floss bread', price: 6,
     ingredients: ['bread flour', 'whole milk', 'egg', 'sugar', 'yeast', 'butter', 'taro paste', 'pork floss', 'mayonnaise', 'salt'] },
