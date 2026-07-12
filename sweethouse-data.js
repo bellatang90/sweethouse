@@ -7,7 +7,7 @@ export const PRODUCTS = [
     ingredients: ['bread flour', 'whole milk', 'egg', 'sugar', 'yeast', 'butter', 'red bean paste', 'cream cheese', 'salt'] },
   { id: 'taro-cheese', cat: 'bread', name: 'taro cheese bread', price: 4,
     ingredients: ['bread flour', 'whole milk', 'egg', 'sugar', 'yeast', 'butter', 'taro paste', 'cream cheese', 'salt'] },
-  { id: 'hot-dog', cat: 'bread', name: 'hot dog bread', price: 5, photo: 'menu_photos/hot-dog.jpeg',
+  { id: 'hot-dog', cat: 'bread', name: 'hot dog bread', price: 5, photo: 'menu_photos/hot_dog_bread.jpeg',
     ingredients: ['bread flour', 'whole milk', 'egg', 'sugar', 'yeast', 'butter', 'hot dog sausage', 'green onion', 'sesame', 'salt'] },
   { id: 'taro-pork-floss', cat: 'bread', name: 'taro & pork floss bread', price: 6,
     ingredients: ['bread flour', 'whole milk', 'egg', 'sugar', 'yeast', 'butter', 'taro paste', 'pork floss', 'mayonnaise', 'salt'] },
