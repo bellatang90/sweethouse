@@ -344,6 +344,7 @@ class Component extends DCLogic {
 
   placeOrder() {
     const { cart, name, phone, locId, note, products, locations } = this.state;
+    if (this.state.paused) { this.setState({ error: 'online ordering is paused right now — please check back soon.' }); return; }
     if (!cart.length) { this.setState({ error: 'your cart is empty.' }); return; }
     if (!name.trim()) { this.setState({ error: 'please add your name.' }); return; }
     if (!phone.trim()) { this.setState({ error: 'please add a phone number so we can confirm.' }); return; }
